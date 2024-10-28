@@ -8,7 +8,7 @@ export const landing = () => {
             <input type="button" id="start-but" value="+">
             <label for="start-but">Create New Project</label>
         </div>
-        <form action="" class="new-project-tab">
+        <form action="" class="new-project-tab addition-form">
             <label for="project-name">Project Name</label>
             <input type="text" id="project-name">
             <input type="submit" value="Create">

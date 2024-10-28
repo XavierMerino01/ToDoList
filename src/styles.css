@@ -47,7 +47,7 @@ body{
   transition-duration: .1s;
 }
 
-.new-project-tab {
+.addition-form {
     position: absolute;
     top: 680px;
     left: 0;
@@ -69,14 +69,14 @@ body{
 }
 
 /* Label styling */
-.new-project-tab label {
+.addition-form label {
     font-size: 14px;
     color: #333;
     margin-bottom: 5px;
 }
 
 /* Input fields */
-.new-project-tab input[type="text"] {
+.addition-form input[type="text"] {
     padding: 8px;
     font-size: 14px;
     border: 1px solid #ccc;
@@ -84,13 +84,13 @@ body{
     outline: none;
 }
 
-.new-project-tab input[type="text"]:focus {
+.addition-form input[type="text"]:focus {
     border-color: #007bff; /* Optional: change color on focus */
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
 }
 
 /* Button styling */
-.new-project-tab input[type="submit"] {
+.addition-form input[type="submit"] {
     padding: 10px;
     font-size: 14px;
     color: #fff;
@@ -101,11 +101,11 @@ body{
     transition: background-color 0.3s;
 }
 
-.new-project-tab input[type="submit"]:hover {
+.addition-form input[type="submit"]:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
-.new-project-tab input[type="submit"]:active {
+.addition-form input[type="submit"]:active {
     background-color: #004080; /* Even darker blue on click */
 }
 
@@ -118,6 +118,8 @@ header > h1{
     margin: 0;
     font-size: 50px;
     font-weight: 600;
+    width: 350px;
+    flex-shrink: 0;
 }
 
 header{
@@ -128,31 +130,53 @@ header{
     padding: 40px;
 }
 
-#add-project-but{
-    width: auto;
+#add-project-but,
+#add-task-but {
+    width: 150px;
     height: 50px;
     border: none;
     border-radius: 40px;
     background-color: white;
     font-size: 20px;
     padding: 15px;
+    flex-shrink: 0;
 }
 
-#add-project-but:hover{
+#add-project-but:hover,
+#add-task-but:hover {
     box-shadow: rgba(80, 80, 124, 0.5) 0 1px 30px;
   transition-duration: .25s;
 }
 
-.project-container{
+.project-container,
+.task-container{
     display: flex;
     padding: 70px;
     gap: 25px;
     flex-wrap: wrap;
 }
 
-.project{
+.project,
+.task{
     border: 1px solid black;
     background-color: white;
-    width: 10%;
+    width: 230px;
     padding: 20px;
+}
+
+.project-buttons{
+    display: flex;
+    gap: 10px;
+}
+
+.low{
+    background-color: lightblue;
+}
+
+.high{
+    background-color: orange;
+}
+
+.critical{
+    background-color: red;
 }
