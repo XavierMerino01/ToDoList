@@ -22,10 +22,10 @@ landing();
 // console.log(currentDate);
 
 class Project{
-    constructor(name){
+    constructor(name, id){
         this.name = name;
         this.tasks = [];
-        this.id = currentProjects.length;
+        this.id = id;
     }
 
     assignNewProjectTask(newTask){
@@ -35,6 +35,17 @@ class Project{
     getProjectCurrentTasks(){
         return this.tasks;
     }
+
+    getProjectId(){
+        return this.id;
+    }
+}
+
+function GenerateProjectId(){
+    if(currentProjects.length == 0){
+        return 0;
+    }
+    return currentProjects[currentProjects.length - 1].getProjectId() +1;
 }
 
 class Task{
@@ -46,6 +57,9 @@ class Task{
         this.status = status;
     }
 
+    changeTaskStatus(newStatus){
+        this.status = newStatus;
+    }
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -61,10 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const projectName = document.getElementById("project-name").value;
         if(projectName){
-            const newProject = new Project(projectName);
-            currentProjects[currentProjects.length] = newProject;
+            const newProject = new Project(projectName, GenerateProjectId());
+            currentProjects.push(newProject);
             projects();
-            UpdateProjectDisplay(newProject);
+            UpdateProjectDisplay(currentProjects);
             OnProjectsScreen();
         }
         else{
@@ -89,9 +103,9 @@ function OnProjectsScreen(){
 
         const projectName = document.getElementById("project-name").value;
         if(projectName){
-            const newProject = new Project(projectName);
-            currentProjects[currentProjects.length] = newProject;
-            UpdateProjectDisplay(newProject);
+            const newProject = new Project(projectName, GenerateProjectId());
+            currentProjects.push(newProject);
+            UpdateProjectDisplay(currentProjects);
             document.getElementById("project-name").value = "";
             form.classList.toggle("show"); 
         }
@@ -122,10 +136,17 @@ function OnTaskScreen(){
     currentScreen = "tasks";
 
     const newTaskButton = document.querySelector("#add-task-but");
+    const backButton = document.querySelector("#back-but");
     const form = document.querySelector(".new-task-tab");
 
     newTaskButton.addEventListener('click', () =>{
         form.classList.toggle("show"); 
+    })
+
+    backButton.addEventListener('click', ()=>{
+        projects();
+        UpdateProjectDisplay(currentProjects);
+        OnProjectsScreen();
     })
 
     form.addEventListener('submit', (event)=>{
@@ -137,7 +158,7 @@ function OnTaskScreen(){
         const priority = document.getElementById("priority").value;
 
         if(taskName && dueDate){
-            const newTask = new Task(taskName, taskDescription, dueDate, priority, false);
+            const newTask = new Task(taskName, taskDescription, dueDate, priority, "unactive");
             form.classList.toggle("show"); 
             document.getElementById("task-title").value = "";
             document.getElementById("task-description").value = "";
@@ -148,5 +169,15 @@ function OnTaskScreen(){
         else{
             alert("Title and Due Date fields must be filled!");
         }
+    })
+
+    const taskContainer = document.querySelector(".task-container");
+
+    taskContainer.addEventListener('statusChanged', (event)=>{
+
+        const task = event.detail.task;
+        const value = event.detail.value;
+
+        task.changeTaskStatus(value);
     })
 }

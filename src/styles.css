@@ -142,8 +142,21 @@ header{
     flex-shrink: 0;
 }
 
+#back-but{
+    width: 150px;
+    height: 50px;
+    border: none;
+    border-radius: 40px;
+    font-size: 20px;
+    padding: 15px;
+    margin-right: 30px;
+    background-color: blue;
+    color: white;
+}
+
 #add-project-but:hover,
-#add-task-but:hover {
+#add-task-but:hover,
+#back-but:hover {
     box-shadow: rgba(80, 80, 124, 0.5) 0 1px 30px;
   transition-duration: .25s;
 }
@@ -162,6 +175,9 @@ header{
     background-color: white;
     width: 230px;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .project-buttons{
@@ -179,4 +195,12 @@ header{
 
 .critical{
     background-color: red;
+}
+
+.task select{
+    width: 100px;
+    color: #60666d;
+    box-shadow: 0 15px 30px -10px transparentize(#000, 0.9);
+    cursor: pointer;
+    outline: none;
 }

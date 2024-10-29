@@ -18,20 +18,21 @@ export const projects = () => {
     `
 }
 
-export const UpdateProjectDisplay = (newGivenProject) => {
+export const UpdateProjectDisplay = (givenProjects) => {
 
-    const projects = document.querySelector('.project-container')
+    const projects = document.querySelector('.project-container');
+    projects.innerHTML ='';
 
-    if(newGivenProject){
+    for(let i = 0; i < givenProjects.length; i++){
         const newProject = document.createElement("div");
         newProject.classList.add("project");
-        newProject.id = `project-${newGivenProject.id}`;
+        newProject.id = `project-${givenProjects[i].id}`;
         const newData = document.createElement("div");
         newData.classList.add("project-data");
         const projectTitle = document.createElement("h2");
-        projectTitle.textContent = newGivenProject.name;  
+        projectTitle.textContent = givenProjects[i].name;  
         const projectTasks = document.createElement("p");
-        projectTasks.textContent = "Current Tasks: "+ newGivenProject.tasks.length;
+        projectTasks.textContent = "Current Tasks: "+ givenProjects[i].tasks.length;
         const buttonDiv = document.createElement("div");
         buttonDiv.classList.add("project-buttons");
         const openButton = document.createElement("button");
@@ -42,21 +43,21 @@ export const UpdateProjectDisplay = (newGivenProject) => {
         deleteButton.textContent = "Delete";
 
         deleteButton.addEventListener("click", () => {
-            const projectToDelete = document.getElementById(`project-${newGivenProject.id}`);
+            const projectToDelete = document.getElementById(`project-${givenProjects[i].id}`);
             if (projectToDelete) {
                 projectToDelete.remove();
             }
 
             projects.dispatchEvent(new CustomEvent('projectDeleted', {
-                detail: { projectId: newGivenProject.id }
+                detail: { projectId: givenProjects[i].id }
             }));
         });
 
         openButton.addEventListener('click', () =>{
-            const openedProject = document.getElementById(`project-${newGivenProject.id}`);
+            const openedProject = document.getElementById(`project-${givenProjects[i].id}`);
 
             projects.dispatchEvent(new CustomEvent('projectOpened', {
-                detail: {projectId: newGivenProject.id}
+                detail: {projectId: givenProjects[i].id}
             }));
         });
 

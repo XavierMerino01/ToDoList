@@ -5,7 +5,11 @@ export const tasks = (project) => {
     content.innerHTML = `
     <header>
             <h1 id="project-title">Project Name</h1>
-            <button id="add-task-but">New Task</button>
+            <div>
+                <button id="back-but">Back</button>
+                <button id="add-task-but">New Task</button>
+            </div>
+            
         </header>
         <form action="" class="addition-form new-task-tab" id="taskform">
             <label for="task-title">Task Name</label>
@@ -54,11 +58,34 @@ export const GenerateProjectTasks = (givenProject) => {
         dueDate.style.fontWeight = 700;
         dueDate.textContent = projectTasks[i].dueDate;
         const priority = document.createElement("p");
-        priority.textContent = projectTasks[i].priority.toUpperCase() + String(s).slice(1);;
-        
+        priority.textContent = "Priority: ";
+        const taskPrio = document.createElement("span");
+        taskPrio.style.fontWeight = 700;
+        taskPrio.textContent = projectTasks[i].priority[0].toUpperCase() + projectTasks[i].priority.slice(1);
 
+        const statusCheck = document.createElement("select");
+        statusCheck.id = "task-status";
+        const status1 = document.createElement("option");
+        status1.value = "unactive";
+        status1.textContent = "Unactive";
+        const status2 = document.createElement("option");
+        status2.value = "doing";
+        status2.textContent = "Doing";
+        const status3 = document.createElement("option");
+        status3.value = "Done";
+        status3.textContent = "Done";
+        
+        statusCheck.append(status1, status2, status3);
+        priority.appendChild(taskPrio);
         taskDate.appendChild(dueDate);
-        taskDiv.append(taskName, taskDesc, taskDate);
+        taskDiv.append(taskName, taskDesc, taskDate, priority, statusCheck);
         tasks.append(taskDiv);
+
+
+        statusCheck.addEventListener('change', ()=>{
+            tasks.dispatchEvent(new CustomEvent('statusChanged', {
+                detail: {task: projectTasks[i], value: statusCheck.value}
+            }));
+        })
     }
 }
