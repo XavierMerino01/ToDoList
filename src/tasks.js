@@ -48,8 +48,16 @@ export const GenerateProjectTasks = (givenProject) => {
         const taskDiv = document.createElement("div");
         taskDiv.classList.add("task");
         taskDiv.classList.add(projectTasks[i].priority);
+
+        const titleDiv = document.createElement("div");
+        titleDiv.classList.add("task-title");
+
         const taskName = document.createElement("h2");
         taskName.textContent = projectTasks[i].title;
+        const deleteButton = document.createElement("button");    
+        deleteButton.textContent = "X";
+        deleteButton.classList.add("delete-task-but");
+
         const taskDesc = document.createElement("p");
         taskDesc.textContent = projectTasks[i].description;
         const taskDate = document.createElement("p");
@@ -65,21 +73,41 @@ export const GenerateProjectTasks = (givenProject) => {
 
         const statusCheck = document.createElement("select");
         statusCheck.id = "task-status";
+        const statusLabel = document.createElement("label");
+        statusLabel.for = "task-status";
+        statusLabel.textContent = "Task State";
+        
         const status1 = document.createElement("option");
-        status1.value = "unactive";
+        status1.value = "Unactive";
         status1.textContent = "Unactive";
         const status2 = document.createElement("option");
-        status2.value = "doing";
+        status2.value = "Doing";
         status2.textContent = "Doing";
         const status3 = document.createElement("option");
         status3.value = "Done";
         status3.textContent = "Done";
+        statusCheck.value = projectTasks[i].status;
         
         statusCheck.append(status1, status2, status3);
+        statusCheck.value = projectTasks[i].status;
+
         priority.appendChild(taskPrio);
         taskDate.appendChild(dueDate);
-        taskDiv.append(taskName, taskDesc, taskDate, priority, statusCheck);
+        titleDiv.append(taskName, deleteButton);
+        taskDiv.append(titleDiv, taskDesc, taskDate, priority, statusLabel, statusCheck);
         tasks.append(taskDiv);
+
+
+        deleteButton.addEventListener("click", () => {
+            const taskToDelete = taskDiv;
+            if (taskToDelete) {
+                taskToDelete.remove();
+            }
+
+            tasks.dispatchEvent(new CustomEvent('taskDeleted', {
+                detail: { task: projectTasks[i]}
+            }));
+        });
 
 
         statusCheck.addEventListener('change', ()=>{

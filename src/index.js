@@ -180,4 +180,8 @@ function OnTaskScreen(){
 
         task.changeTaskStatus(value);
     })
+
+    taskContainer.addEventListener('taskDeleted', (event)=>{
+        currentProject.tasks = currentProject.tasks.filter(task => task !== event.detail.task);
+    })
 }
