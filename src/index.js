@@ -7,19 +7,8 @@ import { GenerateProjectTasks } from "./tasks";
 
 let currentProjects = [];
 let currentProject;
+let currentScreen;
 
-let currentScreen = "landing";
-
-landing();
-
-// const date = new Date();
-
-// let day = date.getDate();
-// let month = date.getMonth() + 1;
-// let year = date.getFullYear();
-
-// let currentDate = `${day}-${month}-${year}`;
-// console.log(currentDate);
 
 class Project{
     constructor(name, id){
@@ -62,7 +51,59 @@ class Task{
     }
 }
 
+const projectAmount = parseInt(localStorage.getItem("projectAmount"), 10) || 0;
+console.log(projectAmount);
+if(projectAmount === 0){
+    currentScreen = "landing";
+    landing();
+}
+else{
+    currentProjects = loadProjectsFromLocalStorage();
+    OnProjectsScreen();
+}
+
+function saveProjectsToLocalStorage(projects) {
+    const projectsData = projects.map(project => ({
+        name: project.name,
+        id: project.id,
+        tasks: project.tasks.map(task => ({
+            title: task.title,
+            description: task.description,
+            dueDate: task.dueDate,
+            priority: task.priority,
+            status: task.status
+        }))
+    }));
+    localStorage.setItem("projects", JSON.stringify(projectsData));
+    localStorage.setItem("projectAmount", JSON.stringify(projectsData.length));
+}
+
+function loadProjectsFromLocalStorage() {
+    const projectsData = localStorage.getItem("projects");
+    if (!projectsData) return []; // Return an empty array if no data
+
+    const parsedData = JSON.parse(projectsData);
+    return parsedData.map(data => {
+        const project = new Project(data.name, data.id);
+        project.tasks = data.tasks.map(taskData => new Task(
+            taskData.title,
+            taskData.description,
+            taskData.dueDate,
+            taskData.priority,
+            taskData.status
+        ));
+        return project;
+    });
+}
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
+
+    if(currentScreen !== "landing") return;
+
     const startButton = document.getElementById("start-but");
     const form = document.querySelector(".new-project-tab");
 
@@ -77,8 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if(projectName){
             const newProject = new Project(projectName, GenerateProjectId());
             currentProjects.push(newProject);
-            projects();
-            UpdateProjectDisplay(currentProjects);
+            saveProjectsToLocalStorage(currentProjects);
             OnProjectsScreen();
         }
         else{
@@ -90,6 +130,8 @@ document.addEventListener("DOMContentLoaded", () => {
 function OnProjectsScreen(){
 
     currentScreen = "projects";
+    projects();
+    UpdateProjectDisplay(currentProjects);
 
     const addProjectButt = document.querySelector("#add-project-but");
     const form = document.querySelector(".new-project-tab");
@@ -105,6 +147,7 @@ function OnProjectsScreen(){
         if(projectName){
             const newProject = new Project(projectName, GenerateProjectId());
             currentProjects.push(newProject);
+            saveProjectsToLocalStorage(currentProjects);
             UpdateProjectDisplay(currentProjects);
             document.getElementById("project-name").value = "";
             form.classList.toggle("show"); 
@@ -118,6 +161,7 @@ function OnProjectsScreen(){
 
     projectContainer.addEventListener('projectDeleted', (event)=>{
         currentProjects = currentProjects.filter(project => project.id !== event.detail.projectId);
+        saveProjectsToLocalStorage(currentProjects);
     })
 
     projectContainer.addEventListener('projectOpened', (event)=>{
@@ -164,6 +208,7 @@ function OnTaskScreen(){
             document.getElementById("task-description").value = "";
             document.getElementById("due-date").value = "";
             currentProject.assignNewProjectTask(newTask);
+            saveProjectsToLocalStorage(currentProjects);
             GenerateProjectTasks(currentProject);
         }
         else{
@@ -179,9 +224,11 @@ function OnTaskScreen(){
         const value = event.detail.value;
 
         task.changeTaskStatus(value);
+        saveProjectsToLocalStorage(currentProjects);
     })
 
     taskContainer.addEventListener('taskDeleted', (event)=>{
         currentProject.tasks = currentProject.tasks.filter(task => task !== event.detail.task);
+        saveProjectsToLocalStorage(currentProjects);
     })
 }
